@@ -1,37 +1,26 @@
 import React from 'react'
 import './App.css';
-import axios from "axios";
-import UserList from "./components/User";
+
 import './css/main.css'
-import Menu from "./components/Menu";
-import Footer from "./components/Footer";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+import Projects from './pages/Projects';
+import Todos from './pages/Todos';
+import Users from './pages/Users';
+import Layout from './pages/Layout';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      'users': [],
-    }
-  }
+const App = () => {
 
-  componentDidMount() {
-    axios.get('http://127.0.0.1:8000/api/users/').then(resp => {
-      this.setState({
-        'users': resp.data
-      });
-    }).catch(err => console.log(err));
-  }
+  const router = createBrowserRouter(createRoutesFromElements(
+    <Route path='/' element={<Layout/>}>
+      <Route index element={<Projects/>}/>
+      <Route path='todos' element={<Todos/>}/>
+      <Route path='users' element={<Users/>}/>
+    </Route>
+  ))
 
-  render() {
-    return (<div>
-        <Menu title="Users"/>
-        <main>
-          <UserList users={this.state.users}/>
-        </main>
-          <Footer/>
-    </div>
-    )
-  }
+
+    return (<RouterProvider router={router} />)
+  
 }
 
 export default App;
