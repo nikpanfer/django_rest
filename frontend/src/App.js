@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import './App.css';
 
 import './css/main.css'
-import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from 'react-router-dom';
+import {createBrowserRouter, createRoutesFromElements, Link, Route, RouterProvider} from 'react-router-dom';
 import Projects from './pages/Projects';
 import Todos from './pages/Todos';
 import Users from './pages/Users';
@@ -30,7 +30,7 @@ const App = () => {
     const get_token_from_storage = () => {
         const cookies = new Cookies()
         const token = cookies.get('token')
-        this.setState({'token': token})
+        setToken(token)
     }
 
     const get_headers = () => {
@@ -46,7 +46,7 @@ const App = () => {
     const getToken = (username, password) => {
         axios.post('http://127.0.0.1:8000/api-token-auth/', {username: username, password: password})
             .then(response => {
-                console.log(response.data)
+                set_token(response.data['token'])
             }).catch(error => alert('Неверный логин или пароль'))
     }
 
@@ -55,11 +55,12 @@ const App = () => {
     })
 
     const router = createBrowserRouter(createRoutesFromElements(
-        <Route path='/' element={<Layout/>}>
+        <Route path='/' element={<Layout
+            login={is_authenticated() ? <button onClick={logout}>Logout</button> : <Link to="login">Login</Link>}/>}>
             <Route index element={<Projects headers={get_headers}/>}/>
             <Route path='todos' element={<Todos headers={get_headers}/>}/>
             <Route path='users' element={<Users headers={get_headers}/>}/>
-            <Route path='login' element={<Login getToken={(login, passwd) => getToken(login, passwd)}/>}/>
+            <Route path='login' element={<Login getToken={getToken}/>}/>
         </Route>
     ))
 

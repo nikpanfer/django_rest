@@ -6,10 +6,11 @@ const Todos = (props) => {
     const [todos, setTodos] = useState([])
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/todos/', {props.get_headers()}).then(resp => {
+        const headers = props.headers()
+        axios.get('http://127.0.0.1:8000/api/todos/', {headers}).then(resp => {
             setTodos(resp.data.results);
         }).catch(err => console.log(err));
-    })
+    }, [])
 
     return ( <TodoList todos={todos}/> );
 }

@@ -6,10 +6,11 @@ const Projects = (props) => {
     const [projects, setProjects] = useState([])
 
     useEffect(() => {
-      axios.get('http://127.0.0.1:8000/api/projects/', {props.get_headers()}).then(resp => {
+        const headers = props.headers()
+      axios.get('http://127.0.0.1:8000/api/projects/', {headers}).then(resp => {
         setProjects(resp.data.results);
       }).catch(err => console.log(err));
-  })
+  }, [])
     return ( <ProjectList projects={projects} /> );
 }
  
