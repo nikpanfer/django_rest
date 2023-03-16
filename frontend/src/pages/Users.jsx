@@ -2,11 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import UserList from "../components/User";
 
-const Users = () => {
+const Users = (props) => {
     const [users, setUsers] = useState([])
     useEffect(() => {
         console.log('qwe')
-        axios.get('http://127.0.0.1:8000/api/users/').then(resp => {
+        axios.get('http://127.0.0.1:8000/api/users/', {props.get_headers()}).then(resp => {
           setUsers(resp.data.results);
         }).catch(err => console.log(err));
     })
