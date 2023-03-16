@@ -1,0 +1,35 @@
+body {
+    background-color: #333;
+    color: #fff;
+
+}
+
+.header {
+    background-color: #222;
+    padding: 25px 100px;
+}
+.header a {
+    margin-right: 20px;
+    color: aquamarine;
+}
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 25px 100px;
+    background-color: #444;
+    text-align: center;
+}
+
+main {
+    margin: 50px 100px;
+    width: 50%;
+    float: left;
+}
+
+.user {
+    margin-bottom: 50px;
+    background-color: #61dafb;
+    padding: 20px;
+}
