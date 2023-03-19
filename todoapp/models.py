@@ -9,6 +9,9 @@ class ProjectModel(models.Model):
     repo = models.URLField(blank=True, null=True)
     users = models.ManyToManyField(CustomUser)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
 
@@ -21,3 +24,5 @@ class TodoModel(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
+    class Meta:
+        ordering = ['created']
