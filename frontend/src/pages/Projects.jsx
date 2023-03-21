@@ -1,17 +1,27 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ProjectList from "../components/Project";
+import { ProjectCreationForm } from "../components/ProjectCreationForm";
 
-const Projects = (props) => {
-    const [projects, setProjects] = useState([])
+const Projects = ({ projects, remove, create, usersList }) => {
+  const [filteredProjects, setFilteredProjects] = useState(projects);
 
-    useEffect(() => {
-        const headers = props.headers()
-      axios.get('http://127.0.0.1:8000/api/projects/', {headers}).then(resp => {
-        setProjects(resp.data.results);
-      }).catch(err => console.log(err));
-  }, [])
-    return ( <ProjectList projects={projects} /> );
-}
- 
+  return (
+    <div>
+      <label htmlFor="filter">Поиск</label>
+      <input
+        name="filter"
+        type="text"
+        onChange={(event) =>
+          setFilteredProjects(
+            projects.filter((prj) => prj.name.includes(event.target.value))
+          )
+
+        }
+      />
+      <ProjectCreationForm create={create} usersList={usersList} />
+      <ProjectList remove={remove} projects={filteredProjects} />
+    </div>
+  );
+};
+
 export default Projects;
