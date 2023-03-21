@@ -14,6 +14,9 @@ import Cookies from 'universal-cookie';
 const App = () => {
 
     const [token, setToken] = useState('')
+    const [users, setUsers] = useState([])
+    const [todos, setTodos] = useState([])
+    const [projects, setProjects] = useState([])
 
 
     const set_token = (token) => {
@@ -50,16 +53,75 @@ const App = () => {
             }).catch(error => alert('Неверный логин или пароль'))
     }
 
+    const loadUsers = () => {
+        const headers = get_headers()
+
+        axios.get('http://127.0.0.1:8000/api/1/users/', {headers}).then(resp => {
+            setUsers(resp.data.results);
+        }).catch(err => console.log(err));
+    }
+
+    const loadTodos = () => {
+        const headers = get_headers()
+        axios.get('http://127.0.0.1:8000/api/1/todos/', {headers}).then(resp => {
+            setTodos(resp.data.results);
+        }).catch(err => console.log(err));
+    }
+
+    const loadProjects = () => {
+        const headers = get_headers()
+        axios.get('http://127.0.0.1:8000/api/1/projects/', {headers}).then(resp => {
+            setProjects(resp.data.results);
+        }).catch(err => console.log(err));
+    }
+
+    const createTodo = (text, isActive, project, user) => {
+        const headers = get_headers()
+        const data = {text, isActive, project, user}
+        axios.post('http://127.0.0.1:8000/api/1/todos/', data, {headers})
+            .then(resp => {setTodos([resp.data, ...todos])})
+            .catch(err => console.log(err));
+    }
+
+    const createProject = (name, repo, users) => {
+        const headers = get_headers()
+        const data = {name, repo, users}
+        axios.post('http://127.0.0.1:8000/api/1/projects/', data, {headers})
+            .then(resp => {setProjects([resp.data, ...projects])})
+            .catch(err => console.log(err));
+    }
+
+    const deleteTodo = (id) => {
+        const headers = get_headers()
+        axios.delete(`http://127.0.0.1:8000/api/1/todos/${id}`, {headers})
+            .then(() => setTodos(todos.filter(item => item.id !== id)))
+            .catch(err => console.error(err))
+    }
+
+    const deleteProject = (id) => {
+        const headers = get_headers()
+        console.log(id)
+        axios.delete(`http://127.0.0.1:8000/api/1/projects/${id}`, {headers})
+            .then(() => setProjects(projects.filter(item => item.id !== id)))
+            .catch(err => console.error(err))
+    }
+
     useEffect(() => {
         get_token_from_storage()
-    })
+    }, [])
+
+    useEffect(() => {
+        loadUsers()
+        loadProjects()
+        loadTodos()
+    }, [token])
 
     const router = createBrowserRouter(createRoutesFromElements(
         <Route path='/' element={<Layout
             login={is_authenticated() ? <button onClick={logout}>Logout</button> : <Link to="login">Login</Link>}/>}>
-            <Route index element={<Projects headers={get_headers}/>}/>
-            <Route path='todos' element={<Todos headers={get_headers}/>}/>
-            <Route path='users' element={<Users headers={get_headers}/>}/>
+            <Route index element={<Projects remove={id => deleteProject(id)} create={createProject} projects={projects} usersList={users}/>}/>
+            <Route path='todos' element={<Todos onDelete={deleteTodo} todos={todos} projects={projects} users={users} create={createTodo}/>}/>
+            <Route path='users' element={<Users users={users}/>}/>
             <Route path='login' element={<Login getToken={getToken}/>}/>
         </Route>
     ))
