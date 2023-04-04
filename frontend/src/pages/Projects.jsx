@@ -1,9 +1,11 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import ProjectList from "../components/Project";
 import { ProjectCreationForm } from "../components/ProjectCreationForm";
 
 const Projects = ({ projects, remove, create, usersList }) => {
   const [filteredProjects, setFilteredProjects] = useState(projects);
+
+  useEffect(() =>setFilteredProjects(projects), [projects])
 
   return (
     <div>
