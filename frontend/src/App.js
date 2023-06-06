@@ -50,7 +50,10 @@ const App = () => {
         axios.post('http://127.0.0.1:8000/api-token-auth/', {username: username, password: password})
             .then(response => {
                 set_token(response.data['token'])
-            }).catch(error => alert('Неверный логин или пароль'))
+            }).catch(error => {
+            alert('Неверный логин или пароль')
+            console.log(error)
+        })
     }
 
     const loadUsers = () => {
